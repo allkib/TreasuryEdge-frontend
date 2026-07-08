@@ -1,0 +1,76 @@
+<article class="savings-gap-chart">
+  <header class="chart-header">
+    <div>
+      <p class="chart-eyebrow">Savings rate opportunity</p>
+      <h2 class="chart-headline">
+        <span class="gap-amount">${{ yearlyGap | number: '1.0-0' }}</span>
+        <span class="gap-period">/ year</span>
+      </h2>
+      <p class="chart-sub">Possible yearly gain on your selected balance at today’s rates.</p>
+    </div>
+    <span class="live-badge" aria-label="Live rates">Live</span>
+  </header>
+
+  <div class="balance-control">
+    <div class="balance-label-row">
+      <label for="balanceSlider">Selected balance</label>
+      <span class="balance-value">${{ balance | number: '1.0-0' }}</span>
+    </div>
+    <input
+      id="balanceSlider"
+      type="range"
+      min="0"
+      max="500000"
+      step="1000"
+      [formControl]="balanceControl"
+      aria-valuemin="0"
+      [attr.aria-valuemax]="maxBalance"
+      [attr.aria-valuenow]="balance"
+    />
+    <div class="balance-range-labels" aria-hidden="true">
+      <span>$0</span>
+      <span>$250K</span>
+      <span>$500K</span>
+    </div>
+    <div class="preset-row">
+      @for (preset of presets; track preset.value) {
+        <button
+          type="button"
+          class="preset-btn"
+          [class.active]="balance === preset.value"
+          (click)="setPreset(preset.value)"
+        >
+          <span class="preset-label">{{ preset.label }}</span>
+          <span class="preset-gap">${{ preset.value * (rateGapPoints / 100) | number: '1.0-0' }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="rate-compare">
+    <div class="rate-card rate-card--low">
+      <span class="rate-card-label">Typical bank</span>
+      <span class="rate-card-apy">{{ typicalApy | number: '1.1-1' }}% APY</span>
+      <div class="rate-bar-track">
+        <div class="rate-bar-fill rate-bar-fill--low" [style.width.%]="typicalBarWidth"></div>
+      </div>
+      <span class="rate-card-earnings">${{ typicalAnnual | number: '1.0-0' }}/yr</span>
+    </div>
+
+    <div class="rate-card rate-card--high">
+      <span class="rate-card-label">T-bill equivalent</span>
+      <span class="rate-card-apy">{{ topApy | number: '1.1-1' }}% APY</span>
+      <div class="rate-bar-track">
+        <div class="rate-bar-fill rate-bar-fill--high" [style.width.%]="topBarWidth"></div>
+      </div>
+      <span class="rate-card-earnings">${{ topAnnual | number: '1.0-0' }}/yr</span>
+    </div>
+  </div>
+
+  <footer class="chart-footer">
+    <p>
+      Rate gap: <strong>{{ rateGapPoints | number: '1.1-1' }} pts</strong>
+      · Illustration uses {{ typicalApy }}% vs {{ topApy }}% APY
+    </p>
+  </footer>
+</article>
