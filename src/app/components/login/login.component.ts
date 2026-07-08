@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { getAuthErrorMessage } from '../../utils/auth-error.util';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginComponent {
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
   onSubmit(): void {
@@ -36,9 +37,12 @@ export class LoginComponent {
       next: () => {
         this.router.navigate(['/compare']);
       },
-      error: () => {
+      error: (err) => {
         this.submitting = false;
-        this.errorMessage = 'Invalid email or password. Please try again.';
+        this.errorMessage = getAuthErrorMessage(
+          err,
+          'Invalid email or password. Please try again.',
+        );
       },
     });
   }

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthModalMode, AuthModalService } from '../../services/auth-modal.service';
 import { AuthService } from '../../services/auth.service';
+import { getAuthErrorMessage } from '../../utils/auth-error.util';
 
 function passwordsMatch(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
@@ -36,13 +37,13 @@ export class AuthModalComponent implements OnInit, OnDestroy {
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
   signupForm = this.fb.group(
     {
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]],
     },
     { validators: passwordsMatch },
@@ -94,9 +95,12 @@ export class AuthModalComponent implements OnInit, OnDestroy {
 
     this.authService.login(email!, password!).subscribe({
       next: () => this.onAuthSuccess(),
-      error: () => {
+      error: (err) => {
         this.submitting = false;
-        this.errorMessage = 'Invalid email or password. Please try again.';
+        this.errorMessage = getAuthErrorMessage(
+          err,
+          'Invalid email or password. Please try again.',
+        );
       },
     });
   }
@@ -115,8 +119,10 @@ export class AuthModalComponent implements OnInit, OnDestroy {
       next: () => this.onAuthSuccess(),
       error: (err) => {
         this.submitting = false;
-        this.errorMessage =
-          err?.error?.message ?? 'Unable to create account. That email may already be registered.';
+        this.errorMessage = getAuthErrorMessage(
+          err,
+          'Unable to create account. That email may already be registered.',
+        );
       },
     });
   }

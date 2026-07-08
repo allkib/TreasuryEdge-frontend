@@ -1,9 +1,15 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, from, map, of, switchMap, tap, throwError } from 'rxjs';
+import { Observable, catchError, from, map, of, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { getFallbackTaxRate } from '../data/fallback-tax.data';
 import { FilingStatus, TaxRateResponse } from '../models/tax.model';
 import { ApiCacheService } from './api-cache.service';
+
+export interface TaxRateResult {
+  tax: TaxRateResponse;
+  isFallback: boolean;
+}
 
 export interface StateSelection {
   stateCode: string;
@@ -67,21 +73,36 @@ export class TaxService {
     stateCode: string,
     income: number,
     filingStatus: FilingStatus = 'single',
-  ): Observable<TaxRateResponse> {
-    const cacheKey = `tax:${stateCode}:${income}:${filingStatus}`;
+  ): Observable<TaxRateResult> {
+    const normalizedIncome = Math.max(Number(income) || 0, 0);
+    const cacheKey = `tax:${stateCode}:${normalizedIncome}:${filingStatus}`;
     const cached = this.cache.get<TaxRateResponse>(cacheKey);
 
     if (cached) {
-      return of(cached);
+      return of({ tax: cached, isFallback: false });
     }
 
     const params = new HttpParams()
-      .set('income', Math.max(income, 0).toString())
+      .set('income', normalizedIncome.toString())
       .set('filingStatus', filingStatus);
 
     return this.http
       .get<TaxRateResponse>(`${this.apiUrl}/tax-rate/${stateCode}`, { params })
-      .pipe(tap((response) => this.cache.set(cacheKey, response)));
+      .pipe(
+        tap((response) => this.cache.set(cacheKey, response)),
+        map((tax) => ({ tax, isFallback: false })),
+        catchError((error) => {
+          console.warn(
+            `[TaxService] Live tax rate unavailable for ${stateCode} at $${normalizedIncome}; using bracket fallback.`,
+            error,
+          );
+
+          return of({
+            tax: getFallbackTaxRate(stateCode, normalizedIncome, filingStatus),
+            isFallback: true,
+          });
+        }),
+      );
   }
 
   private extractStateCode(principalSubdivisionCode?: string): string | null {

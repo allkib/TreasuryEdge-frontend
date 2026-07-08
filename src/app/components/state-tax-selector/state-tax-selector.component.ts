@@ -28,8 +28,8 @@ export class StateTaxSelectorComponent implements OnInit, OnDestroy {
   hasStateIncomeTax = true;
   loadingLocation = false;
   loadingTax = false;
+  usingFallbackTax = false;
   locationError = '';
-  taxError = '';
 
   private readonly destroy$ = new Subject<void>();
 
@@ -74,29 +74,32 @@ export class StateTaxSelectorComponent implements OnInit, OnDestroy {
     });
   }
 
-  private fetchTaxRate(stateCode: string, income: number): void {
+  private fetchTaxRate(stateCode: string, income: number | string): void {
+    const normalizedIncome = Math.max(Number(income) || 0, 0);
     const state = this.states.find((s) => s.code === stateCode);
     this.selectedStateName = state?.name ?? stateCode;
     this.loadingTax = true;
-    this.taxError = '';
+    this.usingFallbackTax = false;
 
-    this.taxService.getTaxRate(stateCode, income).subscribe({
-      next: (tax) => {
+    this.taxService.getTaxRate(stateCode, normalizedIncome).subscribe({
+      next: ({ tax, isFallback }) => {
         this.loadingTax = false;
+        this.usingFallbackTax = isFallback;
         this.marginalRatePercent = tax.marginalRate * 100;
         this.hasStateIncomeTax = tax.hasStateIncomeTax;
 
         this.selectionChange.emit({
           stateCode,
           stateName: this.selectedStateName,
-          income: Math.max(income, 0),
+          income: normalizedIncome,
           marginalRate: tax.marginalRate,
           hasStateIncomeTax: tax.hasStateIncomeTax,
+          isFallbackTax: isFallback,
         });
       },
-      error: (err: Error) => {
+      error: () => {
         this.loadingTax = false;
-        this.taxError = err.message || 'Unable to load state tax rate.';
+        this.usingFallbackTax = true;
       },
     });
   }

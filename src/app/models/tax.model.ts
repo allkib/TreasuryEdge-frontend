@@ -16,4 +16,5 @@ export interface CompareSelection {
   income: number;
   marginalRate: number;
   hasStateIncomeTax: boolean;
+  isFallbackTax?: boolean;
 }

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Location } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { InViewDirective } from '../../directives/in-view.directive';
 
 interface ProConItem {
@@ -15,11 +16,14 @@ interface GuideSection {
 
 @Component({
   selector: 'app-tbills-guide',
-  imports: [RouterLink, InViewDirective],
+  imports: [InViewDirective],
   templateUrl: './tbills-guide.component.html',
   styleUrl: './tbills-guide.component.css',
 })
-export class TbillsGuideComponent {
+export class TbillsGuideComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+
   readonly sections: GuideSection[] = [
     { id: 'what', title: 'What they are', summary: 'Short-term IOUs from the U.S. government.' },
     { id: 'banks', title: 'Banks & your savings', summary: 'Why your APY is 0.01% while they earn 4%+.' },
@@ -84,4 +88,31 @@ export class TbillsGuideComponent {
         'Buying, rolling maturities, and tracking a ladder takes more attention than parking cash at a bank — even if the yield difference is large.',
     },
   ];
+
+  ngOnInit(): void {
+    const hash = window.location.hash.slice(1);
+
+    if (hash) {
+      setTimeout(() => this.scrollToSection(hash), 0);
+    }
+  }
+
+  scrollToSection(sectionId: string): void {
+    const target = document.getElementById(sectionId);
+
+    if (!target) {
+      return;
+    }
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.location.replaceState(`/tbills#${sectionId}`);
+  }
+
+  goToCompare(): void {
+    this.router.navigate(['/compare']);
+  }
+
+  goToLadder(): void {
+    this.router.navigate(['/ladder']);
+  }
 }

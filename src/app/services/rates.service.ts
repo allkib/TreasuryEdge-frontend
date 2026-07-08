@@ -73,7 +73,7 @@ export class RatesService {
     filingStatus: FilingStatus = 'single',
   ): Observable<CompareData> {
     return this.taxService.getTaxRate(state, income, filingStatus).pipe(
-      switchMap((tax) => {
+      switchMap(({ tax }) => {
         const marginalRate = tax.marginalRate;
 
         return forkJoin({

@@ -9,7 +9,9 @@
     </p>
     <nav class="guide-jump" aria-label="On this page">
       @for (section of sections; track section.id) {
-        <a [href]="'#' + section.id">{{ section.title }}</a>
+        <button type="button" class="guide-jump-link" (click)="scrollToSection(section.id)">
+          {{ section.title }}
+        </button>
       }
     </nav>
   </header>
@@ -81,11 +83,15 @@
       source; Treasuries are liquid, high-quality collateral and investment. The gap between what
       banks earn on safe assets and what they pay depositors is a core source of net interest income.
     </p>
-    <p class="guide-callout">
-      TreasuryEdge exists to make that gap visible: compare tax-adjusted T-bill yields against the APY
-      your bank actually pays you.
-      <a routerLink="/compare">Run your savings gap →</a>
-    </p>
+    <div class="guide-callout">
+      <p>
+        TreasuryEdge exists to make that gap visible: compare tax-adjusted T-bill yields against the APY
+        your bank actually pays you.
+      </p>
+      <button type="button" class="btn btn-primary btn-sm" (click)="goToCompare()">
+        Run your savings gap
+      </button>
+    </div>
   </section>
 
   <section id="backing" class="guide-section card guide-section--accent" appInView>
@@ -196,8 +202,8 @@
       quarterly tax impact on your interest income.
     </p>
     <div class="guide-ctas">
-      <a routerLink="/ladder" class="btn btn-primary">Open Ladder Tracker</a>
-      <a routerLink="/compare" class="btn btn-outline">Compare Rates First</a>
+      <button type="button" class="btn btn-primary" (click)="goToLadder()">Open Ladder Tracker</button>
+      <button type="button" class="btn btn-outline" (click)="goToCompare()">Compare Rates First</button>
     </div>
   </section>
 
