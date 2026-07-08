@@ -14,6 +14,7 @@ import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { Subject, takeUntil } from 'rxjs';
 import { InViewDirective } from '../../directives/in-view.directive';
 import { BankRate, ComparisonResponse, TBillRate } from '../../models/rates.model';
+import { getFallbackComparison } from '../../data/fallback-rates.data';
 import { AuthModalService } from '../../services/auth-modal.service';
 import { AuthService } from '../../services/auth.service';
 import { RatesService } from '../../services/rates.service';
@@ -31,7 +32,7 @@ export class ComparisonPanelComponent implements OnChanges, OnDestroy, AfterView
   @ViewChild('yieldChartCanvas') yieldChartCanvas?: ElementRef<HTMLCanvasElement>;
 
   loading = false;
-  error = '';
+  usingFallbackData = true;
   comparison: ComparisonResponse | null = null;
   chartVisible = false;
 
@@ -129,8 +130,13 @@ export class ComparisonPanelComponent implements OnChanges, OnDestroy, AfterView
   }
 
   private loadComparison(): void {
+    this.comparison = getFallbackComparison(this.stateTaxRate);
+    this.usingFallbackData = true;
     this.loading = true;
-    this.error = '';
+
+    if (this.viewReady) {
+      this.renderChart(this.chartVisible);
+    }
 
     this.ratesService
       .getComparison(this.stateTaxRate)
@@ -138,15 +144,19 @@ export class ComparisonPanelComponent implements OnChanges, OnDestroy, AfterView
       .subscribe({
         next: (data) => {
           this.comparison = data;
+          this.usingFallbackData = false;
           this.loading = false;
           if (this.viewReady) {
             this.renderChart(this.chartVisible);
           }
         },
         error: () => {
+          this.comparison = getFallbackComparison(this.stateTaxRate);
+          this.usingFallbackData = true;
           this.loading = false;
-          this.error =
-            'Unable to load rate comparison. The server may be waking up — please wait a moment and try again.';
+          if (this.viewReady) {
+            this.renderChart(this.chartVisible);
+          }
         },
       });
   }

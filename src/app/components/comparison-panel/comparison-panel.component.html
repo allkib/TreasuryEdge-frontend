@@ -7,33 +7,36 @@
   </header>
 
   @if (loading) {
-    <div class="skeleton-layout" role="status" aria-live="polite" aria-label="Loading rate data">
-      <div class="skeleton-card">
-        <div class="skeleton skeleton-title"></div>
-        <div class="skeleton skeleton-chart"></div>
+    <div class="alert alert--info" role="status" aria-live="polite">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
+      <div class="alert__content">
+        <strong class="alert__title">Fetching live rates</strong>
+        <p class="alert__message">Sample data is shown below while we connect to the server. First load may take up to a minute on Render.</p>
       </div>
-      <div class="skeleton-grid">
-        <div class="skeleton-card">
-          <div class="skeleton skeleton-title"></div>
-          @for (i of [1, 2, 3, 4, 5]; track i) {
-            <div class="skeleton skeleton-row"></div>
-          }
-        </div>
-        <div class="skeleton-card">
-          <div class="skeleton skeleton-title"></div>
-          @for (i of [1, 2, 3, 4, 5]; track i) {
-            <div class="skeleton skeleton-row"></div>
-          }
+    </div>
+  }
+
+  @if (usingFallbackData && !loading) {
+    <div class="alert alert--warning" role="status">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+        <line x1="12" y1="9" x2="12" y2="13" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+      <div class="alert__content">
+        <strong class="alert__title">Showing sample rates</strong>
+        <p class="alert__message">Live data is unavailable right now. Figures below are representative — sign in and retry when the API is back online.</p>
+        <div class="alert-actions">
+          <button type="button" class="btn btn-outline btn-sm" (click)="retry()">Retry Live Data</button>
         </div>
       </div>
-      <p class="loading-caption">Fetching latest rates — this may take up to a minute on first load.</p>
     </div>
-  } @else if (error) {
-    <div class="status-card error-state" role="alert">
-      <p>{{ error }}</p>
-      <button type="button" class="btn btn-primary" (click)="retry()">Try Again</button>
-    </div>
-  } @else if (comparison) {
+  }
+
+  @if (comparison) {
     @if (topTBill && topBank) {
       <article
         class="chart-card card"
@@ -62,7 +65,7 @@
       </article>
     }
 
-    <div class="rates-grid">
+    <div class="rates-grid" [class.rates-grid--refreshing]="loading">
       <article class="rates-card card" appInView>
         <header class="rates-card-header">
           <h3>U.S. Treasury Bills</h3>
