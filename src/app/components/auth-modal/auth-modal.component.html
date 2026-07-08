@@ -1,0 +1,135 @@
+@if (isOpen) {
+  <div class="modal-backdrop" (click)="close()" aria-hidden="true"></div>
+
+  <div
+    class="modal-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="auth-modal-title"
+    (click)="$event.stopPropagation()"
+  >
+    <button type="button" class="modal-close" aria-label="Close" (click)="close()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
+
+    <div class="auth-tabs" role="tablist">
+      <button
+        type="button"
+        role="tab"
+        class="auth-tab"
+        [class.active]="mode === 'login'"
+        [attr.aria-selected]="mode === 'login'"
+        (click)="setMode('login')"
+      >
+        Sign In
+      </button>
+      <button
+        type="button"
+        role="tab"
+        class="auth-tab"
+        [class.active]="mode === 'signup'"
+        [attr.aria-selected]="mode === 'signup'"
+        (click)="setMode('signup')"
+      >
+        Sign Up
+      </button>
+    </div>
+
+    @if (mode === 'login') {
+      <header class="auth-header">
+        <h2 id="auth-modal-title">Welcome back</h2>
+        <p class="subtitle">Sign in to unlock all rates and save your comparisons.</p>
+      </header>
+
+      @if (errorMessage) {
+        <div class="form-error-banner" role="alert">{{ errorMessage }}</div>
+      }
+
+      <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()" novalidate class="auth-form">
+        <div class="form-group">
+          <label for="modal-login-email">Email</label>
+          <input id="modal-login-email" type="email" formControlName="email" autocomplete="email" placeholder="you@example.com" />
+          @if (loginForm.controls.email.touched && loginForm.controls.email.hasError('required')) {
+            <span class="field-error">Email is required.</span>
+          }
+          @if (loginForm.controls.email.touched && loginForm.controls.email.hasError('email')) {
+            <span class="field-error">Enter a valid email address.</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="modal-login-password">Password</label>
+          <input id="modal-login-password" type="password" formControlName="password" autocomplete="current-password" placeholder="••••••••" />
+          @if (loginForm.controls.password.touched && loginForm.controls.password.hasError('required')) {
+            <span class="field-error">Password is required.</span>
+          }
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="submitting">
+          {{ submitting ? 'Signing in…' : 'Sign In' }}
+        </button>
+      </form>
+
+      <p class="auth-switch">
+        Don't have an account?
+        <button type="button" class="link-btn" (click)="setMode('signup')">Create one</button>
+      </p>
+    } @else {
+      <header class="auth-header">
+        <h2 id="auth-modal-title">Create your account</h2>
+        <p class="subtitle">Free account — unlock all bank rates and comparisons.</p>
+      </header>
+
+      @if (errorMessage) {
+        <div class="form-error-banner" role="alert">{{ errorMessage }}</div>
+      }
+
+      <form [formGroup]="signupForm" (ngSubmit)="onSignupSubmit()" novalidate class="auth-form">
+        <div class="form-group">
+          <label for="modal-signup-email">Email</label>
+          <input id="modal-signup-email" type="email" formControlName="email" autocomplete="email" placeholder="you@example.com" />
+          @if (signupForm.controls.email.touched && signupForm.controls.email.hasError('required')) {
+            <span class="field-error">Email is required.</span>
+          }
+          @if (signupForm.controls.email.touched && signupForm.controls.email.hasError('email')) {
+            <span class="field-error">Enter a valid email address.</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="modal-signup-password">Password</label>
+          <input id="modal-signup-password" type="password" formControlName="password" autocomplete="new-password" placeholder="At least 6 characters" />
+          @if (signupForm.controls.password.touched && signupForm.controls.password.hasError('required')) {
+            <span class="field-error">Password is required.</span>
+          }
+          @if (signupForm.controls.password.touched && signupForm.controls.password.hasError('minlength')) {
+            <span class="field-error">Password must be at least 6 characters.</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="modal-signup-confirm">Confirm password</label>
+          <input id="modal-signup-confirm" type="password" formControlName="confirmPassword" autocomplete="new-password" placeholder="Re-enter your password" />
+          @if (signupForm.controls.confirmPassword.touched && signupForm.controls.confirmPassword.hasError('required')) {
+            <span class="field-error">Please confirm your password.</span>
+          }
+          @if (signupForm.touched && signupForm.hasError('passwordsMismatch')) {
+            <span class="field-error">Passwords do not match.</span>
+          }
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="submitting">
+          {{ submitting ? 'Creating account…' : 'Sign Up' }}
+        </button>
+      </form>
+
+      <p class="auth-switch">
+        Already have an account?
+        <button type="button" class="link-btn" (click)="setMode('login')">Sign in</button>
+      </p>
+    }
+  </div>
+}
