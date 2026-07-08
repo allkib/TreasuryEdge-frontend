@@ -1,9 +1,11 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('treasuryedge_token');
+  const isApiRequest = req.url.startsWith(environment.apiUrl);
 
-  if (token) {
+  if (token && isApiRequest) {
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`,
