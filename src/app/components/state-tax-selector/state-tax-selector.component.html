@@ -1,0 +1,69 @@
+<section class="state-tax-selector card">
+  <div class="selector-header">
+    <h2>Get results adjusted for your state</h2>
+    <p>T-bills are exempt from state tax — we recalculate the effective APY equivalent for your state.</p>
+  </div>
+
+  <div class="selector-actions">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="useMyLocation()"
+      [disabled]="loadingLocation"
+    >
+      {{ loadingLocation ? 'Detecting location…' : 'Use My Location' }}
+    </button>
+
+    <div class="divider"><span>or select manually</span></div>
+
+    <div class="selector-fields">
+      <div class="manual-select">
+        <label for="stateSelect">State</label>
+        <select id="stateSelect" [formControl]="stateControl">
+          @for (state of states; track state.code) {
+            <option [value]="state.code">{{ state.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="income-input">
+        <label for="incomeEstimate">Estimated annual income <span class="optional">(optional)</span></label>
+        <div class="income-wrap">
+          <span class="income-prefix" aria-hidden="true">$</span>
+          <input
+            id="incomeEstimate"
+            type="number"
+            min="0"
+            step="1000"
+            [formControl]="incomeControl"
+            aria-describedby="income-hint"
+          />
+        </div>
+        <span id="income-hint" class="field-hint">Defaults to ${{ defaultIncome | number }} — adjust for a more accurate bracket</span>
+      </div>
+    </div>
+  </div>
+
+  @if (locationError) {
+    <p class="field-hint error">{{ locationError }}</p>
+  }
+
+  @if (taxError) {
+    <p class="field-hint error">{{ taxError }}</p>
+  }
+
+  @if (selectedStateName) {
+    <div class="tax-summary">
+      @if (loadingTax) {
+        <span class="tax-loading">Loading tax rate for {{ selectedStateName }}…</span>
+      } @else if (hasStateIncomeTax) {
+        <span class="tax-badge">
+          {{ selectedStateName }} · {{ marginalRatePercent | number: '1.1-2' }}% marginal rate
+          at ${{ incomeControl.value | number }} income
+        </span>
+      } @else {
+        <span class="tax-badge tax-badge--neutral">{{ selectedStateName }} · No state income tax</span>
+      }
+    </div>
+  }
+</section>

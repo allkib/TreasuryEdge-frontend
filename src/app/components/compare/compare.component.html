@@ -1,0 +1,12 @@
+<section class="compare-page">
+  <header class="compare-hero">
+    <h1>Your Savings Gap</h1>
+    <p>See how much more your cash could earn with tax-adjusted T-bill yields vs. top big bank rates.</p>
+  </header>
+
+  <app-state-tax-selector (selectionChange)="onSelectionChange($event)" />
+
+  @if (selection) {
+    <app-comparison-panel [stateTaxRate]="selection.marginalRate" />
+  }
+</section>

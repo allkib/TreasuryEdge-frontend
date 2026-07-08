@@ -1,0 +1,142 @@
+<section class="comparison-panel">
+  <header class="panel-header">
+    <div class="panel-heading">
+      <h2>Yield Comparison</h2>
+      <p class="subtitle">Tax-equivalent T-bill yields vs. top big bank savings &amp; CD rates.</p>
+    </div>
+  </header>
+
+  @if (loading) {
+    <div class="skeleton-layout" role="status" aria-live="polite" aria-label="Loading rate data">
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-chart"></div>
+      </div>
+      <div class="skeleton-grid">
+        <div class="skeleton-card">
+          <div class="skeleton skeleton-title"></div>
+          @for (i of [1, 2, 3, 4, 5]; track i) {
+            <div class="skeleton skeleton-row"></div>
+          }
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton skeleton-title"></div>
+          @for (i of [1, 2, 3, 4, 5]; track i) {
+            <div class="skeleton skeleton-row"></div>
+          }
+        </div>
+      </div>
+      <p class="loading-caption">Fetching latest rates — this may take up to a minute on first load.</p>
+    </div>
+  } @else if (error) {
+    <div class="status-card error-state" role="alert">
+      <p>{{ error }}</p>
+      <button type="button" class="btn btn-primary" (click)="retry()">Try Again</button>
+    </div>
+  } @else if (comparison) {
+    @if (topTBill && topBank) {
+      <article
+        class="chart-card card"
+        appInView
+        (visibleChange)="onChartVisible($event)"
+      >
+        <div class="chart-header">
+          <h3>Top Yield Comparison</h3>
+          <span
+            class="advantage-badge"
+            [class.positive]="yieldDifference >= 0"
+            [class.negative]="yieldDifference < 0"
+          >
+            {{ yieldDifference >= 0 ? '+' : '' }}{{ yieldDifference | number: '1.2-2' }}% T-bill edge
+          </span>
+        </div>
+
+        <div class="chart-canvas-wrap">
+          <canvas #yieldChartCanvas aria-label="Yield comparison bar chart"></canvas>
+        </div>
+
+        <div class="chart-legend">
+          <span><i class="dot tbill"></i> T-Bill effective APY: {{ topTBillYield | number: '1.2-2' }}%</span>
+          <span><i class="dot bank"></i> Top Bank APY: {{ topBankApy | number: '1.2-2' }}%</span>
+        </div>
+      </article>
+    }
+
+    <div class="rates-grid">
+      <article class="rates-card card" appInView>
+        <header class="rates-card-header">
+          <h3>U.S. Treasury Bills</h3>
+          <span class="rates-sort-label">Highest yield first</span>
+        </header>
+
+        <div class="rate-list">
+          @for (bill of sortedTbills; track bill.cusip) {
+            <div class="rate-row">
+              <div class="rate-row-main">
+                <span class="rate-row-title">{{ bill.securityTerm }}</span>
+                <span class="rate-row-subtitle">{{ bill.securityType }}</span>
+              </div>
+              <div class="rate-row-stats">
+                <div class="rate-stat">
+                  <span class="rate-stat-label">Rate</span>
+                  <span class="rate-stat-value">{{ bill.highInvestmentRate | number: '1.2-2' }}%</span>
+                </div>
+                <div class="rate-stat highlight">
+                  <span class="rate-stat-label">Effective APY</span>
+                  <span class="rate-stat-value">{{ (bill.taxEquivalentYield ?? bill.highInvestmentRate) | number: '1.2-2' }}%</span>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <p class="empty-state">No T-bill data available.</p>
+          }
+        </div>
+      </article>
+
+      <article class="rates-card card" appInView>
+        <header class="rates-card-header">
+          <h3>Big Bank Savings &amp; CDs</h3>
+          <span class="rates-sort-label">Highest APY first</span>
+        </header>
+
+        @if (!isLoggedIn && sortedBanks.length > 5) {
+          <div class="gate-banner">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <span>Sign up free to see all {{ sortedBanks.length }} rates</span>
+            <button type="button" class="btn btn-primary btn-sm" (click)="openSignUp()">Sign Up Free</button>
+          </div>
+        }
+
+        <div class="rate-list">
+          @for (bank of sortedBanks; track bank.bankName + bank.accountType; let i = $index) {
+            <div class="rate-row" [class.rate-row--locked]="isBankLocked(i)">
+              <div class="rate-row-main">
+                <span class="rate-row-title">{{ bank.bankName }}</span>
+                <span class="rate-row-subtitle">{{ bank.accountType }}</span>
+              </div>
+              <div class="rate-row-stats">
+                <div class="rate-stat highlight">
+                  <span class="rate-stat-label">APY</span>
+                  <span class="rate-stat-value">{{ bank.apy | number: '1.2-2' }}%</span>
+                </div>
+              </div>
+              @if (isBankLocked(i)) {
+                <div class="lock-overlay" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                </div>
+              }
+            </div>
+          } @empty {
+            <p class="empty-state">No bank rate data available.</p>
+          }
+        </div>
+      </article>
+    </div>
+  }
+</section>

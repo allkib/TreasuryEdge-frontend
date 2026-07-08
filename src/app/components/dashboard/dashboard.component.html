@@ -1,0 +1,12 @@
+<section class="dashboard">
+  <header class="dashboard-header card">
+    <div class="dashboard-greeting">
+      <p class="dashboard-eyebrow">Your dashboard</p>
+      <h1>Welcome back{{ userEmail ? ', ' + userEmail : '' }}</h1>
+      <p class="welcome">Here's your latest yield comparison at a glance.</p>
+    </div>
+    <button type="button" class="btn btn-outline dashboard-logout" (click)="onLogout()">Logout</button>
+  </header>
+
+  <app-comparison-panel />
+</section>
