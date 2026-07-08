@@ -1,0 +1,355 @@
+.guide-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 820px;
+  margin: 0 auto;
+  animation: page-enter 0.4s ease both;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.guide-hero h1 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.guide-eyebrow {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-emerald);
+}
+
+.guide-lead {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.guide-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.guide-jump a {
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  border: 1px solid var(--border-subtle);
+  color: var(--navy);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.guide-jump a:hover {
+  border-color: var(--accent-emerald);
+  color: var(--accent-emerald);
+}
+
+.guide-section h2 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+}
+
+.guide-section p,
+.section-intro {
+  margin: 0 0 var(--space-2);
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.guide-section p:last-child {
+  margin-bottom: 0;
+}
+
+.guide-section--accent {
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fcfa 100%);
+}
+
+.fact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.fact-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-2);
+  background: var(--bg-page);
+  border-radius: var(--radius);
+}
+
+.fact-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.fact-value {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.flow-diagram {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  gap: var(--space-1);
+  align-items: stretch;
+  margin: var(--space-3) 0;
+}
+
+.flow-step {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-2);
+  background: var(--bg-page);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.flow-step strong {
+  color: var(--navy);
+}
+
+.flow-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-emerald);
+  color: var(--white);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.flow-arrow {
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 1.25rem;
+}
+
+.guide-callout {
+  margin-top: var(--space-3) !important;
+  padding: var(--space-2);
+  background: var(--emerald-soft);
+  border-radius: var(--radius);
+  color: var(--navy) !important;
+  font-weight: 500;
+}
+
+.guide-callout a {
+  font-weight: 700;
+}
+
+.guide-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.guide-list li {
+  margin-bottom: var(--space-2);
+}
+
+.guide-list strong {
+  color: var(--navy);
+}
+
+.pros-cons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.pros-card h3,
+.cons-card h3 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.pros-card h3 {
+  color: var(--accent-emerald);
+}
+
+.cons-card h3 {
+  color: #b45309;
+}
+
+.pros-card ul,
+.cons-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.pros-card li,
+.cons-card li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.pros-card li:last-child,
+.cons-card li:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.pros-card strong,
+.cons-card strong {
+  color: var(--navy);
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+
+.option-card {
+  padding: var(--space-2);
+  background: var(--bg-page);
+  border-radius: var(--radius);
+}
+
+.option-card h3 {
+  margin: 0 0 8px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.option-card p {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 1.55;
+}
+
+.guide-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.glossary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+}
+
+.glossary div {
+  padding: var(--space-2);
+  background: var(--bg-page);
+  border-radius: var(--radius);
+}
+
+.glossary dt {
+  margin: 0 0 4px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.glossary dd {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.guide-disclaimer {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.guide-footer h2 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+@media (max-width: 768px) {
+  .guide-hero h1 {
+    font-size: var(--text-xl);
+  }
+
+  .guide-lead {
+    font-size: var(--text-base);
+  }
+
+  .fact-grid,
+  .pros-cons-grid,
+  .option-grid,
+  .glossary {
+    grid-template-columns: 1fr;
+  }
+
+  .flow-diagram {
+    grid-template-columns: 1fr;
+  }
+
+  .flow-arrow {
+    justify-content: center;
+    transform: rotate(90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guide-page {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

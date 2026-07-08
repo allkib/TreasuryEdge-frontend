@@ -1,0 +1,229 @@
+<article class="guide-page">
+  <header class="guide-hero" appInView>
+    <p class="guide-eyebrow">Investor education</p>
+    <h1>What Are Treasury Bills?</h1>
+    <p class="guide-lead">
+      T-bills are short-term debt issued by the U.S. government. They are one of the most widely held
+      “cash equivalent” investments in the world — and the same instrument big banks use to earn yield
+      on your deposits while paying you almost nothing.
+    </p>
+    <nav class="guide-jump" aria-label="On this page">
+      @for (section of sections; track section.id) {
+        <a [href]="'#' + section.id">{{ section.title }}</a>
+      }
+    </nav>
+  </header>
+
+  <section id="what" class="guide-section card" appInView>
+    <h2>What they are</h2>
+    <p>
+      A <strong>Treasury bill (T-bill)</strong> is a marketable U.S. government security with a maturity
+      of one year or less. The Treasury auctions them regularly in standard terms — 4, 8, 13, 17, 26,
+      and 52 weeks — and they are sold at a <em>discount</em> to face value (par).
+    </p>
+    <p>
+      You do not receive periodic coupon payments. Instead, the interest is built into the difference
+      between what you pay and the $1,000 face value you receive at maturity. For example, if you pay
+      $980 for a bill that matures at $1,000 in 13 weeks, your return is that $20 spread annualized
+      over the holding period.
+    </p>
+
+    <div class="fact-grid">
+      <div class="fact-card">
+        <span class="fact-label">Issuer</span>
+        <span class="fact-value">U.S. Department of the Treasury</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-label">Typical terms</span>
+        <span class="fact-value">4 – 52 weeks</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-label">Minimum denomination</span>
+        <span class="fact-value">$100 (par), often bought in $1,000 increments</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-label">Interest form</span>
+        <span class="fact-value">Discount — paid at maturity</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="banks" class="guide-section card" appInView>
+    <h2>How banks use your savings — and keep the spread</h2>
+    <p>
+      When you deposit cash at a major bank, it does not sit idle in a vault. Banks are in the business
+      of maturity transformation: they take short-term deposits and invest them in higher-yielding,
+      safe assets — very often <strong>U.S. Treasury securities including T-bills</strong>.
+    </p>
+
+    <div class="flow-diagram" aria-label="How bank deposit spread works">
+      <div class="flow-step">
+        <span class="flow-step-num">1</span>
+        <strong>You deposit $50,000</strong>
+        <span>Bank credits your savings account at ~0.01% APY.</span>
+      </div>
+      <div class="flow-arrow" aria-hidden="true">→</div>
+      <div class="flow-step">
+        <span class="flow-step-num">2</span>
+        <strong>Bank buys T-bills</strong>
+        <span>Same cash is invested in government paper yielding 4%+.</span>
+      </div>
+      <div class="flow-arrow" aria-hidden="true">→</div>
+      <div class="flow-step">
+        <span class="flow-step-num">3</span>
+        <strong>Bank keeps the spread</strong>
+        <span>You earn ~$5/year; the bank captures most of the Treasury yield.</span>
+      </div>
+    </div>
+
+    <p>
+      This is not a conspiracy — it is the standard banking model. Deposits are a low-cost funding
+      source; Treasuries are liquid, high-quality collateral and investment. The gap between what
+      banks earn on safe assets and what they pay depositors is a core source of net interest income.
+    </p>
+    <p class="guide-callout">
+      TreasuryEdge exists to make that gap visible: compare tax-adjusted T-bill yields against the APY
+      your bank actually pays you.
+      <a routerLink="/compare">Run your savings gap →</a>
+    </p>
+  </section>
+
+  <section id="backing" class="guide-section card guide-section--accent" appInView>
+    <h2>Full faith and credit of the United States</h2>
+    <p>
+      T-bills are backed by the <strong>full faith and credit</strong> of the U.S. government — the
+      commitment that the Treasury will pay principal and interest using the federal government’s
+      taxing power and borrowing authority.
+    </p>
+    <ul class="guide-list">
+      <li>
+        <strong>Direct sovereign obligation.</strong> You are a creditor of the United States, not a
+        customer of a private company. Repayment does not depend on a bank’s profitability.
+      </li>
+      <li>
+        <strong>Constitutional backdrop.</strong> The 14th Amendment prohibits questioning the validity
+        of the public debt of the United States authorized by law — a legal foundation for honoring
+        Treasury obligations.
+      </li>
+      <li>
+        <strong>Market history.</strong> Marketable Treasury securities have not experienced a missed
+        principal payment. Debate over debt-ceiling politics is about timely payment mechanics, not the
+        underlying obligation structure.
+      </li>
+      <li>
+        <strong>Not the same as FDIC.</strong> FDIC insurance protects bank deposits if the <em>bank</em>
+        fails. T-bills are not “insured” — they are direct claims on the Treasury. Investors weigh
+        sovereign credit risk instead of bank credit risk.
+      </li>
+    </ul>
+    <p class="guide-disclaimer">
+      “Risk-free” is a market shorthand, not a guarantee of future outcomes. All investments carry
+      some form of risk, including reinvestment, inflation, and policy risk.
+    </p>
+  </section>
+
+  <section id="pros-cons" class="guide-section" appInView>
+    <h2>Pros and cons</h2>
+    <p class="section-intro">
+      T-bills are a cash-management tool, not a wealth-building engine. Whether they fit depends on
+      your time horizon, tax situation, and how much effort you want to spend vs. a savings account.
+    </p>
+
+    <div class="pros-cons-grid">
+      <div class="card pros-card">
+        <h3>Advantages</h3>
+        <ul>
+          @for (item of pros; track item.title) {
+            <li>
+              <strong>{{ item.title }}</strong>
+              <span>{{ item.detail }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="card cons-card">
+        <h3>Trade-offs</h3>
+        <ul>
+          @for (item of cons; track item.title) {
+            <li>
+              <strong>{{ item.title }}</strong>
+              <span>{{ item.detail }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="buying" class="guide-section card" appInView>
+    <h2>How to buy T-bills</h2>
+    <div class="option-grid">
+      <article class="option-card">
+        <h3>TreasuryDirect</h3>
+        <p>
+          The U.S. Treasury’s official portal. You buy at auction or in the secondary market through
+          your account. No broker commission, but you manage the account yourself.
+        </p>
+      </article>
+      <article class="option-card">
+        <h3>Brokerage account</h3>
+        <p>
+          Fidelity, Schwab, Vanguard, and others let you buy T-bills on the secondary market or at
+          auction. Often the easiest path if you already invest through a broker.
+        </p>
+      </article>
+      <article class="option-card">
+        <h3>Money-market funds &amp; ETFs</h3>
+        <p>
+          Funds like government money-market mutual funds or short Treasury ETFs hold T-bills and
+          similar paper. Convenient, but you pay fund expenses and do not own the bills directly.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section id="laddering" class="guide-section card" appInView>
+    <h2>T-bill laddering</h2>
+    <p>
+      A <strong>ladder</strong> staggers maturities — e.g. 4-week, 13-week, 26-week, and 52-week bills
+      — so something matures regularly. When one rung matures, you can reinvest at prevailing rates or
+      use the cash. This balances yield with periodic liquidity without guessing a single perfect
+      maturity date.
+    </p>
+    <p>
+      TreasuryEdge’s ladder tracker lets you record holdings, see upcoming maturities, and estimate
+      quarterly tax impact on your interest income.
+    </p>
+    <div class="guide-ctas">
+      <a routerLink="/ladder" class="btn btn-primary">Open Ladder Tracker</a>
+      <a routerLink="/compare" class="btn btn-outline">Compare Rates First</a>
+    </div>
+  </section>
+
+  <footer class="guide-footer card" appInView>
+    <h2>Quick glossary</h2>
+    <dl class="glossary">
+      <div>
+        <dt>Par (face value)</dt>
+        <dd>The amount a T-bill pays at maturity — typically $1,000 per bill.</dd>
+      </div>
+      <div>
+        <dt>Discount yield</dt>
+        <dd>Quoted yield based on the discount from par. Common in headlines and auctions.</dd>
+      </div>
+      <div>
+        <dt>Investment yield</dt>
+        <dd>Return based on amount actually invested — usually slightly higher than discount yield.</dd>
+      </div>
+      <div>
+        <dt>CUSIP</dt>
+        <dd>A nine-character identifier for a specific Treasury security issue.</dd>
+      </div>
+    </dl>
+    <p class="guide-disclaimer">
+      This page is for educational purposes only and is not investment, tax, or legal advice.
+      Consult a qualified professional for decisions about your specific situation.
+    </p>
+  </footer>
+</article>

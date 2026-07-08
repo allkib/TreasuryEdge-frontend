@@ -19,6 +19,12 @@ export const routes: Routes = [
     data: { animation: 'compare' },
   },
   {
+    path: 'tbills',
+    loadComponent: () =>
+      import('./components/tbills-guide/tbills-guide.component').then((m) => m.TbillsGuideComponent),
+    data: { animation: 'guide' },
+  },
+  {
     path: 'ladder',
     loadComponent: () =>
       import('./components/ladder/ladder.component').then((m) => m.LadderComponent),
