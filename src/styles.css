@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Brand */
+  --navy: #0a2540;
+  --slate-950: #0b1120;
+  --slate-900: #0f172a;
+  --slate-400: #94a3b8;
+  --slate-300: #cbd5e1;
+  --slate-100: #f1f5f9;
+  --accent-emerald: #10b981;
+  --accent-emerald-hover: #059669;
+  --emerald-soft: #d1fae5;
+  --accent: #1a73e8;
+  --accent-hover: #1557b0;
+  --white: #ffffff;
+  --green: #2e7d32;
+  --red: #c62828;
+  --red-soft: #ffebee;
+
+  /* Surfaces */
+  --bg-page: #f7f9fc;
+  --bg-card: #ffffff;
+  --border-subtle: #e8edf3;
+
+  /* Text */
+  --text-primary: #0a2540;
+  --text-secondary: #5a6b7d;
+  --text-muted: #8b99a8;
+
+  /* Spacing */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+
+  /* Typography */
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+  --text-2xl: 2.25rem;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 3px rgba(10, 37, 64, 0.06);
+  --shadow-md: 0 4px 16px rgba(10, 37, 64, 0.08);
+  --shadow-lg: 0 8px 32px rgba(10, 37, 64, 0.12);
+  --shadow-nav: 0 1px 0 rgba(10, 37, 64, 0.06), 0 4px 12px rgba(10, 37, 64, 0.04);
+
+  --radius: 8px;
+  --radius-pill: 999px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: var(--text-base);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+a {
+  color: var(--accent-emerald);
+}
+
+.in-view-target {
+  opacity: 1;
+}
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: 10px var(--space-2);
+  border-radius: var(--radius);
+  border: 1.5px solid transparent;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  line-height: 1.25;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent-emerald);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent-emerald);
+  color: var(--white);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-emerald-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: var(--bg-page);
+  border-color: #c5ced8;
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: transparent;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: rgba(10, 37, 64, 0.05);
+  color: var(--text-primary);
+}
+
+.btn-block {
+  width: 100%;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  font-size: var(--text-base);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

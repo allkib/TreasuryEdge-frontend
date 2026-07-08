@@ -1,0 +1,29 @@
+<header class="navbar">
+  <div class="navbar-inner">
+    <a routerLink="/" class="brand" aria-label="TreasuryEdge home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+      </span>
+      <span class="brand-text">Treasury<span class="brand-accent">Edge</span></span>
+    </a>
+
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true" tabindex="-1" />
+    <label for="nav-toggle" class="nav-toggle-btn" aria-label="Toggle navigation menu">
+      <span class="hamburger" aria-hidden="true"></span>
+    </label>
+
+    <nav class="nav-links" aria-label="Main navigation">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/compare" routerLinkActive="active">Compare Rates</a>
+      <a routerLink="/ladder" routerLinkActive="active">Ladder</a>
+
+      @if (authService.isLoggedIn()) {
+        <button type="button" class="btn btn-ghost nav-logout" (click)="onLogout()">Logout</button>
+      } @else {
+        <button type="button" class="btn btn-primary nav-signin" (click)="openSignIn()">Sign In</button>
+      }
+    </nav>
+  </div>
+</header>

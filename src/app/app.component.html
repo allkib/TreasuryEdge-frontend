@@ -1,0 +1,8 @@
+<div class="app-shell" [class.app-shell--landing]="isLanding">
+  <app-navbar />
+  <main class="main-content" [class.main-content--full]="isLanding">
+    <router-outlet />
+  </main>
+  <app-footer />
+  <app-auth-modal />
+</div>
