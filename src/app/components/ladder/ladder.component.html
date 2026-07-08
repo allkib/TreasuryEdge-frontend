@@ -1,0 +1,346 @@
+<section class="ladder-page">
+  <header class="ladder-hero">
+    <h1>T-Bill Ladder</h1>
+    <p>Track your holdings, upcoming maturities, and estimated quarterly taxes in one place.</p>
+  </header>
+
+  @if (isPreview) {
+    <div class="guest-banner card" appInView>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <rect x="3" y="11" width="18" height="11" rx="2" />
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+      </svg>
+      <div class="guest-banner-copy">
+        <strong>Sample ladder — read-only preview</strong>
+        <span>Demo data below shows how your dashboard, holdings table, and tax estimates will look. Sign in to save your own ladder.</span>
+      </div>
+      <button type="button" class="btn btn-primary btn-sm" (click)="openSignIn()">Sign In</button>
+    </div>
+  }
+
+  @if (loading && isLoggedIn) {
+    <div class="skeleton-dashboard" aria-busy="true" aria-label="Loading ladder data">
+      @for (card of [1, 2, 3, 4, 5]; track card) {
+        <div class="skeleton-card">
+          <div class="skeleton skeleton-label"></div>
+          <div class="skeleton skeleton-value"></div>
+        </div>
+      }
+    </div>
+  } @else if (loadError && isLoggedIn) {
+    <div class="status-card card" role="alert">
+      <p>{{ loadError }}</p>
+      <button type="button" class="btn btn-primary" (click)="loadPageData()">Retry</button>
+    </div>
+  } @else {
+    @if (displayDashboard) {
+      <div class="dashboard-grid" [class.dashboard-grid--preview]="isPreview" appInView>
+        <article class="summary-card card" [class.summary-card--preview]="isPreview">
+          <span class="summary-label">Total Invested</span>
+          <span class="summary-value">{{ displayDashboard.totalInvested | currency }}</span>
+        </article>
+
+        <article class="summary-card card" [class.summary-card--preview]="isPreview">
+          <span class="summary-label">Value at Maturity</span>
+          <span class="summary-value summary-value--highlight">{{ displayDashboard.valueAtMaturity | currency }}</span>
+        </article>
+
+        <article class="summary-card card" [class.summary-card--preview]="isPreview">
+          <span class="summary-label">Next Maturity</span>
+          @if (displayDashboard.nextMaturity) {
+            <span class="summary-value">{{ displayDashboard.nextMaturity.date | date: 'mediumDate' }}</span>
+            <span class="summary-meta">{{ displayDashboard.nextMaturity.holding.term }} · {{ displayDashboard.nextMaturity.holding.parValue | currency }}</span>
+          } @else {
+            <span class="summary-value summary-value--muted">—</span>
+            <span class="summary-meta">No upcoming maturities</span>
+          }
+        </article>
+
+        <article class="summary-card card" [class.summary-card--preview]="isPreview">
+          <span class="summary-label">Annualized Yield</span>
+          <span class="summary-value">{{ formatRate(displayDashboard.annualizedYield) | number: '1.2-2' }}%</span>
+        </article>
+
+        <article class="summary-card card" [class.summary-card--preview]="isPreview">
+          <span class="summary-label">Est. Taxes Due This Quarter</span>
+          <span class="summary-value">{{ displayDashboard.estimatedTaxesDueThisQuarter | currency }}</span>
+        </article>
+      </div>
+    }
+
+    <div class="ladder-layout" [class.ladder-layout--readonly]="isPreview">
+      @if (isLoggedIn) {
+        <section class="card add-holding-card" appInView>
+          <header class="section-header">
+            <h2>Add Holding</h2>
+            <p>Record a T-bill purchase to update your ladder.</p>
+          </header>
+
+          @if (formError) {
+            <div class="form-error-banner" role="alert">{{ formError }}</div>
+          }
+
+          <form [formGroup]="holdingForm" (ngSubmit)="onAddHolding()" novalidate class="holding-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="term">Term</label>
+                <select id="term" formControlName="term">
+                  @for (term of terms; track term) {
+                    <option [value]="term">{{ term }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="parValue">Par Value</label>
+                <div class="input-prefix-wrap">
+                  <span class="input-prefix" aria-hidden="true">$</span>
+                  <input id="parValue" type="number" min="0" step="0.01" formControlName="parValue" placeholder="10000" />
+                </div>
+                @if (holdingForm.controls.parValue.touched && holdingForm.controls.parValue.hasError('required')) {
+                  <span class="field-error">Par value is required.</span>
+                }
+              </div>
+
+              <div class="form-group">
+                <label for="pricePaid">Price Paid</label>
+                <div class="input-prefix-wrap">
+                  <span class="input-prefix" aria-hidden="true">$</span>
+                  <input id="pricePaid" type="number" min="0" step="0.01" formControlName="pricePaid" placeholder="9950" />
+                </div>
+                @if (holdingForm.controls.pricePaid.touched && holdingForm.controls.pricePaid.hasError('required')) {
+                  <span class="field-error">Price paid is required.</span>
+                }
+              </div>
+
+              <div class="form-group">
+                <label for="rate">Rate (%)</label>
+                <input id="rate" type="number" min="0" step="0.01" formControlName="rate" placeholder="4.25" />
+                @if (holdingForm.controls.rate.touched && holdingForm.controls.rate.hasError('required')) {
+                  <span class="field-error">Rate is required.</span>
+                }
+              </div>
+
+              <div class="form-group">
+                <label for="issueDate">Issue Date</label>
+                <input id="issueDate" type="date" formControlName="issueDate" />
+                @if (holdingForm.controls.issueDate.touched && holdingForm.controls.issueDate.hasError('required')) {
+                  <span class="field-error">Issue date is required.</span>
+                }
+              </div>
+
+              <div class="form-group">
+                <label for="maturityDate">Maturity Date</label>
+                <input id="maturityDate" type="date" formControlName="maturityDate" />
+                @if (holdingForm.controls.maturityDate.touched && holdingForm.controls.maturityDate.hasError('required')) {
+                  <span class="field-error">Maturity date is required.</span>
+                }
+              </div>
+
+              <div class="form-group form-group--full">
+                <label for="cusip">CUSIP <span class="optional">(optional)</span></label>
+                <input id="cusip" type="text" formControlName="cusip" placeholder="912796XY0" maxlength="9" />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" [disabled]="submitting">
+              {{ submitting ? 'Adding…' : 'Add Holding' }}
+            </button>
+          </form>
+        </section>
+      } @else {
+        <section class="card add-holding-card add-holding-card--locked" appInView aria-disabled="true">
+          <header class="section-header">
+            <h2>Add Holding</h2>
+            <p>Example form — sign in to record real purchases.</p>
+          </header>
+
+          <div class="locked-form-preview">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Term</label>
+                <input type="text" value="13-Week" disabled />
+              </div>
+              <div class="form-group">
+                <label>Par Value</label>
+                <input type="text" value="$50,000" disabled />
+              </div>
+              <div class="form-group">
+                <label>Price Paid</label>
+                <input type="text" value="$49,520" disabled />
+              </div>
+              <div class="form-group">
+                <label>Rate (%)</label>
+                <input type="text" value="4.35" disabled />
+              </div>
+              <div class="form-group">
+                <label>Issue Date</label>
+                <input type="text" value="Apr 15, 2026" disabled />
+              </div>
+              <div class="form-group">
+                <label>Maturity Date</label>
+                <input type="text" value="Jul 17, 2026" disabled />
+              </div>
+              <div class="form-group form-group--full">
+                <label>CUSIP</label>
+                <input type="text" value="912796XY1" disabled />
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary" (click)="openSignUp()">Sign Up to Add Holdings</button>
+          </div>
+        </section>
+      }
+
+      <section class="card holdings-card" appInView>
+        <header class="section-header section-header--split">
+          <div>
+            <h2>{{ isPreview ? 'Sample Holdings' : 'Your Holdings' }}</h2>
+            <p>Sorted by maturity date.</p>
+          </div>
+          @if (isPreview) {
+            <span class="demo-badge">Demo data</span>
+          }
+        </header>
+
+        @if (isLoggedIn && displayHoldings.length === 0) {
+          <p class="empty-state">No holdings yet. Add your first T-bill above.</p>
+        } @else {
+          <div class="holdings-table-wrap" [class.holdings-table-wrap--preview]="isPreview">
+            <table class="holdings-table">
+              <thead>
+                <tr>
+                  <th scope="col">Term</th>
+                  <th scope="col">CUSIP</th>
+                  <th scope="col">Par Value</th>
+                  <th scope="col">Price Paid</th>
+                  <th scope="col">Rate</th>
+                  <th scope="col">Issue</th>
+                  <th scope="col">Maturity</th>
+                  @if (isLoggedIn) {
+                    <th scope="col"><span class="sr-only">Actions</span></th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (holding of displayHoldings; track holding.id) {
+                  <tr>
+                    <td data-label="Term">{{ holding.term }}</td>
+                    <td data-label="CUSIP">{{ holding.cusip || '—' }}</td>
+                    <td data-label="Par Value">{{ holding.parValue | currency }}</td>
+                    <td data-label="Price Paid">{{ holding.pricePaid | currency }}</td>
+                    <td data-label="Rate">{{ holding.rate | number: '1.2-2' }}%</td>
+                    <td data-label="Issue">{{ holding.issueDate | date: 'mediumDate' }}</td>
+                    <td data-label="Maturity">{{ holding.maturityDate | date: 'mediumDate' }}</td>
+                    @if (isLoggedIn) {
+                      <td data-label="Actions">
+                        <button
+                          type="button"
+                          class="btn btn-outline btn-sm btn-danger"
+                          (click)="onDeleteHolding(holding.id)"
+                          [disabled]="deletingId === holding.id"
+                        >
+                          {{ deletingId === holding.id ? 'Deleting…' : 'Delete' }}
+                        </button>
+                      </td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+    </div>
+
+    <section class="card tax-settings-card" appInView>
+      <header class="section-header">
+        <h2>Tax Settings</h2>
+        <p>Used to estimate quarterly taxes on your ladder income.</p>
+      </header>
+
+      @if (isLoggedIn) {
+        @if (taxError) {
+          <div class="form-error-banner" role="alert">{{ taxError }}</div>
+        }
+
+        @if (taxSaveMessage) {
+          <div class="form-success-banner" role="status">{{ taxSaveMessage }}</div>
+        }
+
+        <form [formGroup]="taxForm" (ngSubmit)="onSaveTaxSettings()" novalidate class="tax-form">
+          <div class="tax-form-fields">
+            <div class="form-group">
+              <label for="marginalTaxRate">Marginal Tax Rate (%)</label>
+              <input
+                id="marginalTaxRate"
+                type="number"
+                min="0"
+                max="100"
+                step="0.1"
+                formControlName="marginalTaxRatePercent"
+              />
+              @if (taxForm.controls.marginalTaxRatePercent.touched && taxForm.controls.marginalTaxRatePercent.hasError('required')) {
+                <span class="field-error">Marginal tax rate is required.</span>
+              }
+            </div>
+
+            <label class="toggle-row" for="paysEstimatedTaxes">
+              <input id="paysEstimatedTaxes" type="checkbox" formControlName="paysEstimatedTaxes" />
+              <span>Pay estimated taxes quarterly</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary" [disabled]="savingTax">
+            {{ savingTax ? 'Saving…' : 'Save Tax Settings' }}
+          </button>
+        </form>
+      } @else {
+        <div class="tax-readonly tax-readonly--demo">
+          <dl class="tax-readonly-grid">
+            <div>
+              <dt>Marginal tax rate</dt>
+              <dd>{{ displayTaxSettings.marginalTaxRate * 100 | number: '1.1-1' }}%</dd>
+            </div>
+            <div>
+              <dt>Quarterly estimated taxes</dt>
+              <dd>{{ displayTaxSettings.paysEstimatedTaxes ? 'Enabled' : 'Disabled' }}</dd>
+            </div>
+          </dl>
+          <p class="tax-readonly-note">Sample settings drive the estimated tax figure in the dashboard above.</p>
+          <button type="button" class="btn btn-outline" (click)="openSignIn()">Sign In to Edit</button>
+        </div>
+      }
+    </section>
+
+    <section class="card security-card" appInView>
+      <header class="security-header">
+        <div class="security-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+        </div>
+        <div>
+          <h2>How your ladder data is protected</h2>
+          <p>
+            TreasuryEdge is built for cash tracking, not account aggregation. Your ladder is a ledger you control —
+            we never pull balances from a brokerage or request TreasuryDirect credentials.
+          </p>
+        </div>
+      </header>
+
+      <ul class="security-list">
+        @for (feature of securityFeatures; track feature.title) {
+          <li>
+            <strong>{{ feature.title }}</strong>
+            <span>{{ feature.detail }}</span>
+          </li>
+        }
+      </ul>
+
+      <p class="security-footnote">
+        Auth tokens are attached via an HTTP interceptor on every API request. Sign out to invalidate the client session;
+        the server rejects expired or tampered JWTs on each call.
+      </p>
+    </section>
+  }
+</section>
