@@ -45,3 +45,4 @@ Thumbs.db
 # Secrets
 .env
 src/environments/environment.local.ts
+.vercel
